@@ -23,7 +23,7 @@ public class Message {
 	}
 }
 
-enum MsgType { MSG_REG, MSG_REGOK, MSG_UNREG, MSG_JOIN, MSG_LEAVE, MSG_SEARCH, MSG_SEARCHOK, MSG_ERROR};
+enum MsgType { MSG_REG, MSG_REGOK, MSG_UNROK, MSG_UNREG, MSG_JOIN, MSG_LEAVE, MSG_SEARCH, MSG_SEARCHOK, MSG_ERROR};
 
 class RegMessage  extends Message{
 	String username;
@@ -60,4 +60,31 @@ class RegResult  extends Message{
 		ip_from=Config.bootstrap_ip;
 		port_from=Config.bootstrap_port;
 	}
+}
+
+class UnRegMessage extends Message{
+	String username;
+
+	public UnRegMessage(String username){
+		this.username=username;
+		this.type=MsgType.MSG_UNREG;
+		ip_to=Config.bootstrap_ip;
+		port_to=Config.bootstrap_port;
+	}
+
+	public String toString(){
+		String temp=" UNREG " + ip_from + " " + port_from + " "+ username;
+		return getLength(temp)+temp;
+	}
+}
+
+class UnRegResult extends Message{
+	public int status;
+
+	public UnRegResult(String msg){
+		type=MsgType.MSG_UNROK;
+		String[] tokens=msg.split(" ");
+		status=Integer.parseInt(tokens[0]);
+	}
+
 }

@@ -22,6 +22,11 @@ public class FileSharer {
 		}if(response.num_neighbors>1){
 			neighbors.add(new Neighbor(response.ip2, response.port2));
 		}
+
+		UnRegResult unRegResponse=(UnRegResult) messenger.sendMessage(new UnRegMessage(Config.my_username));
+		if(unRegResponse.status==0){
+			System.out.println("Unregister is ok");
+		}
 	}
 }
 

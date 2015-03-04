@@ -48,6 +48,8 @@ public class Messenger {
 		int len=msg.length();
 		if(msg.substring(0, 5).equals("REGOK"))
 			return new RegResult(msg.substring(6,len));
+		else if(msg.substring(0, 5).equals("UNROK"))
+			return new UnRegResult(msg.substring(6,len));
 		return null;
 	}
 }
