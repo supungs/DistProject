@@ -2,41 +2,29 @@ import java.net.*;
 import java.io.*; 
 
 public class Receiver extends Thread { 
-	ServerSocket listener;
+	DatagramSocket listener;
 	Messenger messenger;
 	
 	public Receiver(int port, Messenger msgr) throws IOException{
-		listener = new ServerSocket(port);
+		listener = new DatagramSocket(port);
 		this.messenger=msgr;
 		start();
 	}
 
 	public void run(){
-		try {
+		try {		
             while (true) {
-                Socket socket = listener.accept();
-                try {
-                	BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    PrintWriter out =new PrintWriter(socket.getOutputStream(), true);
-                    char[] buf=new char[100];
-            	    in.read(buf);
-            	    out.print("0013 RECIEVED");
-            	    out.close();
-            		in.close();
-            		messenger.onReceive(buf);
-                } finally {
-                    socket.close();
-                }
+            	System.out.println("Reciver waiting");
+            	byte[] receiveData = new byte[300]; 
+                byte[] sendData  = new byte[300]; 
+                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length); 
+
+                listener.receive(receivePacket); 
+                String msg = new String(receivePacket.getData());
+                messenger.onReceive(msg);
             }
         } catch (IOException e) {
 			e.printStackTrace();
 		}
-        finally {
-            try {
-				listener.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-        }
 	}
 }

@@ -112,11 +112,23 @@ class QueryMessage extends Message {
 	public QueryMessage(String file_name, String ip, int port, int hops) {
 		this.type = MsgType.MSG_SER;
 		this.file_name = file_name;
-		this.ip_from = ip;
-		this.port_from = port;
+		this.ip_to = ip;
+		this.port_to = port;
 		this.hops = hops;
 	}
 
+	//129.82.62.142 5070 "Lord of the rings"
+	public QueryMessage(String msg) {
+		type = MsgType.MSG_SEARCH;
+
+		String[] tokens = msg.split(" ");
+		ip_from = tokens[0];
+		port_from = Integer.parseInt(tokens[1]);
+		tokens = msg.split("\"");
+		file_name=tokens[1];
+		hops=Integer.parseInt(tokens[2].substring(1));
+	}
+	
 	/*
 	 * used when forwarding a query for a file
 	 */
@@ -136,44 +148,54 @@ class QueryMessage extends Message {
 	 * @see Message#toString() length SER IP port file_name hops
 	 */
 	public String toString() {
-		String temp = " SER " + ip_from + " " + port_from + " "
-				+ this.file_name + " " + this.hops;
+		String temp = " SER " + ip_from + " " + port_from + " \""
+				+ this.file_name + "\" " + this.hops;
 		return getLength(temp) + temp;
 	}
 }
 
 class QueryResponseMessage extends Message {
 
-	public String file_name = "";
-	int no_file = 0;
+	public String file_name;
+	int num_files;
 	String[] files;
-	int hops = 0;
+	int hops;
 
 	/*
 	 * length SEROK no_files IP port hops filename1 filename2 ... ...
 	 */
 	public QueryResponseMessage(String ip, int port, int no_files,
-			String[] fileNames, int hops) {
+			String[] fileNames) {
 		this.type = MsgType.MSG_SEROK;
 		this.ip_from = ip;
 		this.port_from = port;
 		this.files = fileNames;
-		this.no_file = no_files;
+		this.num_files = no_files;
 		this.hops = hops;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see Message#toString()
-	 */
-	public String toString() {
-		String file_names = "";
-		for (String file : files) {
-			file_names = " " + file;
+	//3 129.82.128.1 2301 baby_go_home.mp3 baby_come_back.mp3 baby.mpeg
+	public QueryResponseMessage(String msg) {
+		type = MsgType.MSG_SEARCHOK;
+
+		String[] tokens = msg.split(" ");
+		num_files=Integer.parseInt(tokens[0]);
+		ip_from = tokens[1];
+		port_from = Integer.parseInt(tokens[2]);
+		
+		files=new String[num_files];
+		for(int i=0;i<num_files;i++){
+			files[i]=tokens[i+3];
 		}
-		String temp = " SEROK " + no_file + " " + ip_from + " " + port_from
-				+ " " + this.hops + " " + this.hops + file_names;
+	}
+
+	public String toString() {
+		String file_names = files[0];
+		for (int i=1;i<files.length; i++) {
+			file_names += " " + files[i];
+		}
+		String temp = " SEROK " + num_files + " " + ip_from + " " + port_from
+				+ " " + this.num_files + " " + file_names;
 		return getLength(temp) + temp;
 	}
 }

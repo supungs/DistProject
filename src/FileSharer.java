@@ -23,10 +23,10 @@ public class FileSharer {
 		}if(response.num_neighbors>1){
 			neighbors.add(new Neighbor(response.ip2, response.port2));
 		}
-
-		UnRegResult unRegResponse=(UnRegResult) messenger.sendMessage(new UnRegMessage(Config.my_username));
-		if(unRegResponse.status==0){
-			System.out.println("Unregister is ok");
+		
+		if(neighbors.size()>0){
+			QueryMessage qmsg=new QueryMessage("Lord of the rings", neighbors.get(0).ip,  neighbors.get(0).port, 4);
+			messenger.sendMessage(qmsg);
 		}
 	}
 }

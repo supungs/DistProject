@@ -1,11 +1,16 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 
 public class Sender {
-	public char[] sendTo(String msg, String ip, int port){
+	public char[] sendTCP(String msg, String ip, int port){
 		Socket echoSocket = null;
         PrintWriter out = null;
         BufferedReader in = null;
@@ -26,6 +31,22 @@ public class Sender {
             System.exit(1);
         }
         return null;
+	}
+	
+	public void sendUDP(String msg, String ip, int port){
+		try{
+			DatagramSocket clientSocket = new DatagramSocket(); 
+			InetAddress IPAddress = InetAddress.getByName(ip); 
+	
+		    byte[] sendData = new byte[300]; 
+		  
+		    sendData = msg.getBytes(); 
+		    DatagramPacket sendPacket =new DatagramPacket(sendData, sendData.length, IPAddress, port); 
+		    
+		    clientSocket.send(sendPacket); 
+		}catch(Exception e){
+			System.out.println("ERror sending");
+		}
 	}
 	
 }

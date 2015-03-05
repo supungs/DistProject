@@ -18,16 +18,23 @@ public class Messenger {
 	 * Send a Message object
 	 */
 	public Message sendMessage(Message msg){
-		char[] temp=sender.sendTo(msg.toString(), msg.ip_to, msg.port_to);
-		String resp=cleanReceived(temp);
-		return parseMsg(resp);
+		if(msg.type==MsgType.MSG_REG){
+			char[] temp=sender.sendTCP(msg.toString(), msg.ip_to, msg.port_to);
+			String resp=cleanReceived(temp);
+			return parseMsg(resp);
+		}else{
+			sender.sendUDP(msg.toString(), msg.ip_to, msg.port_to);
+			return new Message();
+		}
 	}
 	
 	/*
 	 * Get called when a message is recieved
 	 */
-	public void onReceive(char[] buf){
-		String temp=cleanReceived(buf);
+	public void onReceive(String msg){
+		String temp=cleanReceived(msg.toCharArray());
+		Message message=parseMsg(temp);
+		System.out.println("MSG RECEIVED: "+ temp);
 	}
 	
 	/*
@@ -50,6 +57,10 @@ public class Messenger {
 			return new RegResult(msg.substring(6,len));
 		else if(msg.substring(0, 5).equals("UNROK"))
 			return new UnRegResult(msg.substring(6,len));
+		else if(msg.substring(0, 5).equals("SEROK"))
+			return new QueryResponseMessage(msg.substring(6,len));
+		else if(msg.substring(0, 3).equals("SER"))
+			return new QueryMessage(msg.substring(4,len));
 		return null;
 	}
 }
