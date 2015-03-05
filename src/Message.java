@@ -123,7 +123,7 @@ class QueryMessage extends Message {
 		String[] tokens = msg.split(" ");
 		ip_from = tokens[0];
 		port_from = Integer.parseInt(tokens[1]);
-		tokens = msg.split("\"");
+		tokens = msg.split(" ");
 		file_name=tokens[1];
 		hops=Integer.parseInt(tokens[2].substring(1));
 	}
@@ -147,8 +147,8 @@ class QueryMessage extends Message {
 	 * @see Message#toString() length SER IP port file_name hops
 	 */
 	public String toString() {
-		String temp = " SER " + ip_from + " " + port_from + " \""
-				+ this.file_name + "\" " + this.hops;
+		String temp = " SER " + ip_from + " " + port_from + " "
+				+ this.file_name + " " + this.hops;
 		return getLength(temp) + temp;
 	}
 }
