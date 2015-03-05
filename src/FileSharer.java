@@ -53,7 +53,7 @@ public class FileSharer {
 	public void sendQueryMessage(Message msg){
 		QueryMessage qmsg=(QueryMessage)msg;
 		System.out.print("sendQuery Message");
-		messenger.sender.sendTo(qmsg.toString(),"127.0.0.1" , 10001);
+		messenger.sender.sendUDP(qmsg.toString(),"127.0.0.1" , 10001);
 	}
 	
     //Set the Index of the list of files 
