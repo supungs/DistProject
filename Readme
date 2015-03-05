@@ -1,0 +1,7 @@
+To Do List
+
+1. Implement leaving mechanism
+2. Add Node's file list to the FileSharer
+3. Implement query checking, replying & forwarding for FileSharer
+4. Implement query history caching
+5. Implement File-Owner map entry caching
