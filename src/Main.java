@@ -9,6 +9,9 @@ public class Main {
 		Config.my_port=10001;
 		
 		FileSharer sharer=new FileSharer();
+		
+//		QueryMessage msg=new QueryMessage("new movie", "127.0.0.1",10001,0);
+//		sharer.sendQueryMessage(msg);
 	}
 
 }

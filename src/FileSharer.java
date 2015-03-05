@@ -29,6 +29,12 @@ public class FileSharer {
 			System.out.println("Unregister is ok");
 		}
 	}
+	
+	public void sendQueryMessage(Message msg){
+		QueryMessage qmsg=(QueryMessage)msg;
+		System.out.print("sendQuery Message");
+		messenger.sender.sendTo(qmsg.toString(),"127.0.0.1" , 10001);
+	}
 }
 
 class Neighbor{

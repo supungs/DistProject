@@ -20,10 +20,12 @@ public class Sender {
     	    out.close();
     		in.close();
     		echoSocket.close();
+    		System.out.println(out);
     		return buf;
         } catch (Exception e) {
+        	e.printStackTrace();
             System.err.println("Couldn't connect to: " + ip);
-            System.exit(1);
+            //System.exit(1);
         }
         return null;
 	}
