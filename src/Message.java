@@ -88,3 +88,21 @@ class UnRegResult extends Message{
 	}
 
 }
+
+class QueryFileMessage extends Message{
+	public QueryFileMessage(String fileName, String ip, String port){
+		
+	}
+}
+
+class ReplyQueryFileMessage extends Message{
+	
+	public ReplyQueryFileMessage(String fileName, String ip, String port){
+		
+	}
+}
+
+class ForwardQueryFileMessage extends Message{
+	public ForwardQueryFileMessage(){
+	}
+}

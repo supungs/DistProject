@@ -8,6 +8,7 @@ import java.util.List;
 public class FileSharer {
 	List<Neighbor> neighbors;
 	Messenger messenger;
+	//list of files to be shared and list of downloaded files.
 	public FileSharer(){
 		neighbors=new ArrayList<Neighbor>();		
 		messenger=new Messenger();
