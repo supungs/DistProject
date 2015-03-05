@@ -57,6 +57,10 @@ public class Messenger {
 			return new RegResult(msg.substring(6,len));
 		else if(msg.substring(0, 5).equals("UNROK"))
 			return new UnRegResult(msg.substring(6,len));
+           else if(msg.substring(0, 6).equals("JOINOK"))
+			return new JoinResult(msg.substring(7,len));
+		else if(msg.substring(0, 7).equals("LEAVEOK"))
+			return new LeaveResult(msg.substring(8,len));
 		else if(msg.substring(0, 5).equals("SEROK"))
 			return new QueryResponseMessage(msg.substring(6,len));
 		else if(msg.substring(0, 3).equals("SER"))

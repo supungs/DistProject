@@ -23,9 +23,7 @@ public class Message {
 	}
 }
 
-enum MsgType {
-	MSG_REG, MSG_REGOK, MSG_UNROK, MSG_UNREG, MSG_JOIN, MSG_LEAVE, MSG_SEARCH, MSG_SEARCHOK, MSG_ERROR, MSG_SER, MSG_SEROK
-};
+enum MsgType { MSG_REG, MSG_REGOK, MSG_UNROK, MSG_UNREG, MSG_JOINOK ,MSG_JOIN, MSG_LEAVE,MSG_LEAVEOK ,MSG_SEARCH, MSG_SEARCHOK, MSG_ERROR};
 
 class RegMessage extends Message {
 	String username;
@@ -197,6 +195,52 @@ class QueryResponseMessage extends Message {
 		String temp = " SEROK " + num_files + " " + ip_from + " " + port_from
 				+ " " + this.num_files + " " + file_names;
 		return getLength(temp) + temp;
+	}
+}
+
+class JoinMessage extends Message{
+	public JoinMessage(String ip_to, int port_to){
+        this.type=MsgType.MSG_JOIN;
+		this.ip_to=ip_to;
+		this.port_to=port_to;
+	}
+
+	public String toString(){
+		String temp=" JOIN " + ip_from + " " + port_from;
+		return getLength(temp)+temp;
+	}
+}
+
+class JoinResult extends Message{
+	public int status;
+
+	public JoinResult(String msg){
+        type=MsgType.MSG_JOINOK;
+		String[] tokens=msg.split(" ");
+		status=Integer.parseInt(tokens[0]);
+	}
+}
+
+class LeaveMessage extends Message{
+	public LeaveMessage(String ip_to, int port_to){
+		this.type=MsgType.MSG_LEAVE;
+		this.ip_to=ip_to;
+		this.port_to=port_to;
+	}
+
+	public String toString(){
+		String temp=" LEAVE " + ip_from + " " + port_from;
+		return getLength(temp)+temp;
+	}
+}
+
+class LeaveResult extends Message{
+	public int status;
+
+	public LeaveResult(String msg){
+		type=MsgType.MSG_LEAVEOK;
+		String[] tokens=msg.split(" ");
+		status=Integer.parseInt(tokens[0]);
 	}
 }
 
