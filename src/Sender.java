@@ -5,9 +5,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-
 
 public class Sender {
 	public char[] sendTCP(String msg, String ip, int port){
@@ -45,7 +42,7 @@ public class Sender {
 		    
 		    clientSocket.send(sendPacket); 
 		}catch(Exception e){
-			System.out.println("ERror sending");
+			System.out.println("Error sending");
 		}
 	}
 	
