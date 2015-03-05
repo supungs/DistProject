@@ -39,5 +39,5 @@ public class Main {
 		sharer.sendQuery(msg);
 		System.exit(1);
 	}
-
+	}
 }
