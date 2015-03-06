@@ -30,6 +30,7 @@ public class Messenger {
 	
 	/*
 	 * Get called when a message is recieved
+	 *
 	 */
 	public void onReceive(String msg){
 		String temp=cleanReceived(msg.toCharArray());
