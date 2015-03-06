@@ -30,7 +30,7 @@ public class Main {
 		try {
 			inFromUser.readLine();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		} 
 		//Initially sending query message to the neighbors by original file
