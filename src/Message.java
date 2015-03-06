@@ -23,7 +23,7 @@ public class Message {
 	}
 }
 
-enum MsgType { MSG_REG, MSG_REGOK, MSG_UNROK, MSG_UNREG, MSG_JOINOK ,MSG_JOIN, MSG_LEAVE,MSG_LEAVEOK ,MSG_SEARCH, MSG_SEARCHOK, MSG_ERROR};
+enum MsgType { MSG_REG, MSG_REGOK, MSG_UNROK, MSG_UNREG, MSG_JOINOK ,MSG_JOIN, MSG_LEAVE,MSG_LEAVEOK ,MSG_SER, MSG_SEROK, MSG_ERROR};
 
 class RegMessage extends Message {
 	String username;
@@ -109,7 +109,7 @@ class QueryMessage extends Message {
 	 * used when initiate a query for a file
 	 */
 	public QueryMessage(String file_name, String ip, int port, int hops) {
-		this.type = MsgType.MSG_SEARCH;
+		this.type = MsgType.MSG_SER;
 		this.file_name = file_name;
 		this.ip_to = ip;
 		this.port_to = port;
@@ -118,7 +118,7 @@ class QueryMessage extends Message {
 
 	//129.82.62.142 5070 "Lord of the rings"
 	public QueryMessage(String msg) {
-		type = MsgType.MSG_SEARCH;
+		type = MsgType.MSG_SER;
 
 		String[] tokens = msg.split(" ");
 		ip_from = tokens[0];
@@ -162,7 +162,7 @@ class QueryResponseMessage extends Message {
 	
 	
 	public QueryResponseMessage(String msg) {
-		type = MsgType.MSG_SEARCHOK;
+		type = MsgType.MSG_SEROK;
 
 		String[] tokens = msg.split(" ");
 		no_file=Integer.parseInt(tokens[0]);
@@ -176,7 +176,15 @@ class QueryResponseMessage extends Message {
 		}	
 		}
 	}
-
+	public String toString() {
+		String fileNames="";
+		for(int i=0;i<files.length;i++){
+			fileNames+=files[i];
+			fileNames+=" ";
+		}
+		String temp = " SEROK " + no_file + " " + ip_from+ " " + port_from + " " + hops+" "+fileNames;
+		return getLength(temp) + temp;
+	}
 	
 }
 
