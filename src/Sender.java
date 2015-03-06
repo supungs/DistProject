@@ -23,8 +23,10 @@ public class Sender {
     		in.close();
     		echoSocket.close();
     		return buf;
-        } catch (Exception e) {
+        } catch (Exception e) {        	
             System.err.println("Couldn't connect to: " + ip);
+            // added for checking purposes
+            e.printStackTrace();
             System.exit(1);
         }
         return null;
