@@ -12,8 +12,7 @@ public class Main {
 		Config.my_ip="127.0.0.1";
 		Config.my_port=10001;
 		
-		FileSharer sharer=new FileSharer();
-		
+		FileSharer sharer=new FileSharer();		
 		
 		
 		//		QueryMessage msg=new QueryMessage("Lord of the rings", "127.0.0.1", 10001, 4);

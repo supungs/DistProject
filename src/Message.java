@@ -158,8 +158,7 @@ class QueryResponseMessage extends Message {
 	public String[] files;
 	public int hops = 0;
 
-	
-	
+		
 	public QueryResponseMessage(String msg) {
 		type = MsgType.MSG_SEROK;
 

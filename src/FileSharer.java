@@ -90,12 +90,11 @@ public class FileSharer {
 			return output;
 		
 	}
-    //Set the Index of the list of files 
+
+	//Set the Index of the list of files 
 	public void setListOfFiles(String fileName){
 		fileListMap.put(fileName, new Video());
-	}
-	
-	
+	}	
 }
 
 class Neighbor{
@@ -108,7 +107,8 @@ class Neighbor{
 }
 
 class Video{
+	public String name;
 	public int size;
-	public int duration;
-	
+	public int duration;	
+		
 }
