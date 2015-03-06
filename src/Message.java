@@ -133,7 +133,6 @@ class QueryMessage extends Message {
 	 */
 	public QueryMessage(Message queryMessage) {
 		QueryMessage message = (QueryMessage) queryMessage;
-		// message.hops=message.hops+1;
 		this.type = message.getType();
 		this.file_name = message.file_name;
 		this.ip_from = message.ip_from;
