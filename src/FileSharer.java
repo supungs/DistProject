@@ -33,6 +33,20 @@ public class FileSharer {
 		}
 	}
 	
+	
+        //Get the list of files
+	public ArrayList<String> cotainsFile(String fileName){
+		ArrayList<String> output = new ArrayList<String> ();
+			for(String s:fileListMap.keySet()){
+				if(s.toLowerCase().contains(fileName.toLowerCase())){
+					output.add(s);
+				}
+			}
+			
+			return output;
+		
+	}
+	
 	//Sending the query message
 	 public void sendQuery(Message msg){
 		 QueryResponseMessage response=(QueryResponseMessage)messenger.sendMessage(msg);
@@ -56,23 +70,32 @@ public class FileSharer {
 		messenger.sender.sendUDP(qmsg.toString(),"127.0.0.1" , 10001);
 	}
 	
-    //Set the Index of the list of files 
-	public void setListOfFiles(String fileName){
-		fileListMap.put(fileName, new Video());
-	}
-	
 	//Get the list of files
 	public ArrayList<String> containsFile(String fileName){
 		ArrayList<String> output = new ArrayList<String> ();
-			for(String s:fileListMap.keySet()){
-				if(s.toLowerCase().contains(fileName.toLowerCase())){
-					output.add(s);
+		String searchwords[]= fileName.toLowerCase().split(" +");	
+		for(String file_from_list:fileListMap.keySet()){
+			String lowercase_file = file_from_list.toLowerCase();
+			int available_words=0;
+			for(int i=0;i<searchwords.length;i++){
+				String currentword = searchwords[i];
+				if(lowercase_file.contains(currentword+" ")||lowercase_file.contains(currentword+".")||lowercase_file.endsWith(currentword)){
+					available_words++;
 				}
+			}
+				if(available_words==searchwords.length)
+					output.add(file_from_list);
 			}
 			
 			return output;
 		
 	}
+    //Set the Index of the list of files 
+	public void setListOfFiles(String fileName){
+		fileListMap.put(fileName, new Video());
+	}
+	
+	
 }
 
 class Neighbor{
