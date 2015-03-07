@@ -1,8 +1,8 @@
 To Do List
 
-1. Implement leaving mechanism
+1. Implement leaving mechanism  //Done
 2. Add Node's file list to the FileSharer //Done
 3. Implement query checking //Done
-4.replying & forwarding for FileSharer
-5. Implement query history caching
-6. Implement File-Owner map entry caching
+4. Replying & forwarding for FileSharer  //Done
+5. Implement query history caching  //Done
+6. Implement File-Owner map entry caching  //Done

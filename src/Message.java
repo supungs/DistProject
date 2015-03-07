@@ -103,20 +103,20 @@ class UnRegResult extends Message {
 class QueryMessage extends Message {
 
 	public String file_name = "";
-	public int hops = 0;
-
+	public int hops, sequence;
 	/*
 	 * used when initiate a query for a file
 	 */
-	public QueryMessage(String file_name, String ip, int port, int hops) {
+	public QueryMessage(String file_name, String ip, int port, int seq, int hops) {
 		this.type = MsgType.MSG_SER;
 		this.file_name = file_name;
 		this.ip_to = ip;
 		this.port_to = port;
+		this.sequence=seq;
 		this.hops = hops;
 	}
 
-	//129.82.62.142 5070 "Lord of the rings"
+	//129.82.62.142 5070 "Lord of the rings" 12 4
 	public QueryMessage(String msg) {
 		type = MsgType.MSG_SER;
 
@@ -125,19 +125,22 @@ class QueryMessage extends Message {
 		port_from = Integer.parseInt(tokens[1]);
 		tokens = msg.split("\"");
 		file_name=tokens[1];
-		hops=Integer.parseInt(tokens[2].substring(1));
+		sequence=Integer.parseInt(tokens[2].split(" ")[1]);
+		hops=Integer.parseInt(tokens[2].split(" ")[2]);
 	}
 	
 	/*
 	 * used when forwarding a query for a file
 	 */
-	public QueryMessage(Message queryMessage) {
-		QueryMessage message = (QueryMessage) queryMessage;
+	public QueryMessage(QueryMessage message, String ipto, int portto) {
 		this.type = message.getType();
 		this.file_name = message.file_name;
 		this.ip_from = message.ip_from;
 		this.port_from = message.port_from;
+		this.sequence=message.sequence;
 		this.hops = message.hops + 1;
+		this.ip_to=ipto;
+		this.port_to=portto;
 	}
 
 	/*
@@ -147,7 +150,7 @@ class QueryMessage extends Message {
 	 */
 	public String toString() {
 		String temp = " SER " + ip_from + " " + port_from + " \""
-				+ this.file_name + "\" " + this.hops;
+				+ this.file_name + "\" " + sequence+ " "+ hops;
 		return getLength(temp) + temp;
 	}
 }
@@ -156,22 +159,36 @@ class QueryResponseMessage extends Message {
 
 	public int no_file = 0;
 	public String[] files;
-	public int hops = 0;
+	public int hops, sequence;
 
+	public QueryResponseMessage(QueryMessage qmsg, String[] files){
+		this.ip_to=qmsg.ip_from;
+		this.port_to=qmsg.port_from;
+		this.sequence=qmsg.sequence;
+		this.hops=qmsg.hops+1;
 		
+		this.files=new String[files.length];
+		for(int i=0;i<files.length;i++){
+			this.files[i]=files[i].replace(' ', '_');
+		}
+		no_file=files.length;
+	}
+	
+	//no_files IP port seq hops filename1 filename2
 	public QueryResponseMessage(String msg) {
 		type = MsgType.MSG_SEROK;
 
 		String[] tokens = msg.split(" ");
 		no_file=Integer.parseInt(tokens[0]);
-		if(no_file>=1){
 		ip_from = tokens[1];
 		port_from =Integer.parseInt(tokens[2]);
-		hops =Integer.parseInt(tokens[3]);
-		
-		for(int i=4;i<tokens.length;i++){
-			files[i-4]=tokens[i];
-		}	
+		sequence =Integer.parseInt(tokens[3]);
+		hops =Integer.parseInt(tokens[4]);
+		if(no_file>=1){		
+			files=new String[no_file];
+			for(int i=5;i<tokens.length;i++){
+				files[i-5]=tokens[i].replace('_', ' ');
+			}	
 		}
 	}
 	public String toString() {
@@ -180,7 +197,7 @@ class QueryResponseMessage extends Message {
 			fileNames+=files[i];
 			fileNames+=" ";
 		}
-		String temp = " SEROK " + no_file + " " + ip_from+ " " + port_from + " " + hops+" "+fileNames;
+		String temp = " SEROK " + no_file + " " + ip_from+ " " + port_from + " " + sequence+" " + hops+" "+fileNames;
 		return getLength(temp) + temp;
 	}
 	
@@ -229,7 +246,12 @@ class LeaveMessage extends Message{
 		this.ip_to=ip_to;
 		this.port_to=port_to;
 	}
-
+	public LeaveMessage(String msg){
+		type=MsgType.MSG_LEAVE;
+		String[] tokens=msg.split(" ");
+		ip_from=tokens[0];
+		port_from=Integer.parseInt(tokens[1]);
+	}
 	public String toString(){
 		String temp=" LEAVE " + ip_from + " " + port_from;
 		return getLength(temp)+temp;

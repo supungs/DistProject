@@ -67,7 +67,9 @@ public class Messenger {
 			return new JoinMessage(msg.substring(5,len));
 		else if(msg.substring(0, 7).equals("LEAVEOK"))
 			return new LeaveResult(msg.substring(8,len));
-		else if(msg.substring(0, 5).equals("MSG_SEROK"))
+		else if(msg.substring(0, 5).equals("LEAVE"))
+			return new LeaveMessage(msg.substring(6,len));
+		else if(msg.substring(0, 5).equals("SEROK"))
 			return new QueryResponseMessage(msg.substring(6,len));
 		else if(msg.substring(0, 3).equals("SER"))
 			return new QueryMessage(msg.substring(4,len));
