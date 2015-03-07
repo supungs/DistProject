@@ -20,7 +20,7 @@ public class Messenger {
 	 * Send a Message object
 	 */
 	public Message sendMessage(Message msg){
-		if(msg.type==MsgType.MSG_REG){
+		if(msg.type==MsgType.MSG_REG || msg.type==MsgType.MSG_UNREG){
 			char[] temp=sender.sendTCP(msg.toString(), msg.ip_to, msg.port_to);
 			String resp=cleanReceived(temp);
 			return parseMsg(resp);

@@ -15,7 +15,7 @@ public class FileSharer {
 	String[] myFiles;
 	HashMap<String, Node> fileListMap;
 	Node myNode;
-	int queryCounter;
+	int queryCounter, regAtempt;
 	CircularArray recentQueries;
 	
 	public FileSharer() {
@@ -40,17 +40,24 @@ public class FileSharer {
 	}
 
 	private void register() {
-		RegResult response = (RegResult) messenger.sendMessage(new RegMessage(
-				Config.my_username));
-		if (response.num_neighbors > 2) {
-			System.out.println("Server refused registration.");
-			System.exit(1);
-		}
-		if (response.num_neighbors > 0) {
+		RegResult response = (RegResult) messenger.sendMessage(new RegMessage(Config.my_username));
+		if (response.num_neighbors==9998 && regAtempt<1) {
+			UnRegMessage unreg=new UnRegMessage(Config.my_username);
+			messenger.sendMessage(unreg);
+			regAtempt++;
+			register();
+		}else if (response.num_neighbors ==1) {
 			neighbors.add(new Node(response.ip1, response.port1));
-		}
-		if (response.num_neighbors > 1) {
+		}else if (response.num_neighbors==2) {
+			neighbors.add(new Node(response.ip1, response.port1));
 			neighbors.add(new Node(response.ip2, response.port2));
+		}else if (response.num_neighbors>2){
+			if (response.num_neighbors==9997)
+				System.out.println("Registered to another user, try a different IP and port");
+			else if (response.num_neighbors==9996)
+				System.out.println("Can’t register. BS full");
+			else System.out.println("Unknwon error in registration");
+			System.exit(1);
 		}
 	}
 
@@ -172,6 +179,8 @@ public class FileSharer {
 	}
 
 	public void endSharing() {
+		UnRegMessage unreg=new UnRegMessage(Config.my_username);
+		messenger.sendMessage(unreg);
 		for(Node n: neighbors){
 			LeaveMessage lmsg=new LeaveMessage(n.ip, n.port);
 			messenger.sendMessage(lmsg);

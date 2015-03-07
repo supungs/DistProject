@@ -24,9 +24,8 @@ public class Sender {
     		echoSocket.close();
     		return buf;
         } catch (Exception e) {        	
-            System.err.println("Couldn't connect to: " + ip);
+            System.err.println("Error Connecting to: " + ip);
             // added for checking purposes
-            e.printStackTrace();
             System.exit(1);
         }
         return null;
