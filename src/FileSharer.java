@@ -1,90 +1,80 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 /*
  * This is class represents the top of intermediate layer.
  * Application layer directly invoke its functionalities.
  */
-public class FileSharer extends Thread {
-	List<Neighbor> neighbors;
+public class FileSharer{
+	List<Node> neighbors;
 	Messenger messenger;
-	HashMap<String, Video> fileListMap;
-
-	// list of files to be shared and list of downloaded files.
+	String[] myFiles;
+	HashMap<String, Node> fileListMap;
+	Node myNode;
+	
 	public FileSharer() {
-		neighbors = new ArrayList<Neighbor>();
-		messenger = new Messenger();
-		fileListMap = new HashMap<String, Video>();
-
-		RegResult response = (RegResult) messenger.sendMessage(new RegMessage(
-				Config.my_username));
+		myNode=new Node(Config.my_ip, Config.my_port);
+		
+		neighbors = new ArrayList<Node>();
+		messenger = new Messenger(this);
+		fileListMap = new HashMap<String, Node>();
+		myFiles=Config.getRandomFiles();
+		initFileMap();
+		
+		register();
+		greetNeighbors();
+	}
+	
+	private void initFileMap(){
+		for(String f:myFiles){
+			fileListMap.put(f, myNode);
+		}
+	}
+	private void register(){
+		RegResult response = (RegResult) messenger.sendMessage(new RegMessage(Config.my_username));
 		if (response.num_neighbors > 2) {
 			System.out.println("Server refused registration.");
 			System.exit(1);
 		}
 		if (response.num_neighbors > 0) {
-			neighbors.add(new Neighbor(response.ip1, response.port1));
+			neighbors.add(new Node(response.ip1, response.port1));
 		}
 		if (response.num_neighbors > 1) {
-			neighbors.add(new Neighbor(response.ip2, response.port2));
-		}
-
-		UnRegResult unRegResponse = (UnRegResult) messenger
-				.sendMessage(new UnRegMessage(Config.my_username));
-		if (unRegResponse.status == 0) {
-			System.out.println("Unregister is ok");
-		}
+			neighbors.add(new Node(response.ip2, response.port2));
+		}		
 	}
-
-	/**
-	 * to automate the functions of each node,
-	 */
-	public void run() {
-		try {
-			while (true) {
-				int a = (int) Math.random() % 2;
-				switch (a) {
-				case 0:
-					for (int i = 0; i < neighbors.size(); i++) {
-						QueryMessage msg = new QueryMessage(
-								"Adventures of Tintin", neighbors.get(i).ip,
-								neighbors.get(i).port, 0);
-						sendQuery(msg);
-						System.exit(1);
-					}
-					break;
-				case 1:
-				{
-					int random=(int)Math.random()%10;
-					if(random==7){
-						//unregister
-						//register
-						//for this we should have methods for register and unregister 
-					}
-				}
-					break;
-
-				}
-			}
-		} catch (Exception e) {
-
-		}
-	}
-
 	
-	// Get the list of files
-	public ArrayList<String> cotainsFile(String fileName) {
-		ArrayList<String> output = new ArrayList<String>();
-		for (String s : fileListMap.keySet()) {
-			if (s.toLowerCase().contains(fileName.toLowerCase())) {
-				output.add(s);
+	private void greetNeighbors(){
+		for(int i=0;i<neighbors.size();i++){
+			Node nebr=neighbors.get(i);
+			JoinMessage msg=new JoinMessage(nebr.ip,nebr.port);
+			messenger.sendMessage(msg);
+		}
+	}
+
+	public void searchFile(String query) {	
+		ArrayList<String> localFiles =containsFile(query);
+		if(localFiles.size()>0){
+			System.out.println(">>Files found localy:");
+			System.out.println(localFiles.toString());
+		}else{
+			System.out.println(">>No Files found localy: Seaching the network");
+			for(Node node:neighbors){
+				QueryMessage qmsg=new QueryMessage(query, node.ip, node.port, 3);
+				messenger.sendMessage(qmsg);
 			}
 		}
-
-		return output;
-
 	}
+	
+	public void onPeerRequest(Message msg){
+		if(msg.getType()==MsgType.MSG_JOIN){
+			neighbors.add(new Node(msg.ip_from, msg.port_from));
+		}
+	}
+	
 
 	// Sending the query message
 	public void sendQuery(Message msg) {
@@ -126,24 +116,33 @@ public class FileSharer extends Thread {
 			if (available_words == searchwords.length)
 				output.add(file_from_list);
 		}
-
 		return output;
-
 	}
 
-	// Set the Index of the list of files
-	public void setListOfFiles(String fileName) {
-		fileListMap.put(fileName, new Video());
+	public void printMyFiles(){
+		System.out.println(">> My Files:");
+		System.out.println(Arrays.toString(myFiles));
+		System.out.println("");
+	}
+	
+	public void printMyNeighbors(){
+		System.out.println(">> My Neighbors:");
+		System.out.println(neighbors.toString());
+		System.out.println("");
 	}
 }
 
-class Neighbor {
+class Node {
 	public String ip;
 	public int port;
 
-	public Neighbor(String ip, int port) {
+	public Node(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
+	}
+
+	public String toString(){
+		return "<"+ip+":"+port+">";
 	}
 }
 
@@ -151,5 +150,4 @@ class Video {
 	public String name;
 	public int size;
 	public int duration;
-
 }

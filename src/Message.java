@@ -123,7 +123,7 @@ class QueryMessage extends Message {
 		String[] tokens = msg.split(" ");
 		ip_from = tokens[0];
 		port_from = Integer.parseInt(tokens[1]);
-		tokens = msg.split(" ");
+		tokens = msg.split("\"");
 		file_name=tokens[1];
 		hops=Integer.parseInt(tokens[2].substring(1));
 	}
@@ -146,8 +146,8 @@ class QueryMessage extends Message {
 	 * @see Message#toString() length SER IP port file_name hops
 	 */
 	public String toString() {
-		String temp = " SER " + ip_from + " " + port_from + " "
-				+ this.file_name + " " + this.hops;
+		String temp = " SER " + ip_from + " " + port_from + " \""
+				+ this.file_name + "\" " + this.hops;
 		return getLength(temp) + temp;
 	}
 }
@@ -192,7 +192,12 @@ class JoinMessage extends Message{
 		this.ip_to=ip_to;
 		this.port_to=port_to;
 	}
-
+	public JoinMessage(String msg){
+        this.type=MsgType.MSG_JOIN;
+        String[] tokens = msg.split(" ");
+		this.ip_from=tokens[0];
+		this.port_from=Integer.parseInt(tokens[1]);
+	}
 	public String toString(){
 		String temp=" JOIN " + ip_from + " " + port_from;
 		return getLength(temp)+temp;
@@ -201,11 +206,20 @@ class JoinMessage extends Message{
 
 class JoinResult extends Message{
 	public int status;
-
+	public JoinResult(String ip_to, int port_to){
+        this.type=MsgType.MSG_JOINOK;
+		this.ip_to=ip_to;
+		this.port_to=port_to;
+	}
+	
 	public JoinResult(String msg){
         type=MsgType.MSG_JOINOK;
 		String[] tokens=msg.split(" ");
 		status=Integer.parseInt(tokens[0]);
+	}
+	public String toString(){
+		String temp=" JOINOK " + status;
+		return getLength(temp)+temp;
 	}
 }
 
@@ -229,5 +243,5 @@ class LeaveResult extends Message{
 		type=MsgType.MSG_LEAVEOK;
 		String[] tokens=msg.split(" ");
 		status=Integer.parseInt(tokens[0]);
-}
+	}
 }

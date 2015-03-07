@@ -4,9 +4,11 @@ import java.io.IOException;
 public class Messenger {
 	Sender sender;
 	Receiver receiver;
+	FileSharer sharer;
 	
-	public Messenger(){
+	public Messenger(FileSharer sharer){
 		sender=new Sender();
+		this.sharer=sharer;
 		try {
 			receiver=new Receiver(Config.my_port, this);
 		} catch (IOException e) {
@@ -34,8 +36,9 @@ public class Messenger {
 	 */
 	public void onReceive(String msg){
 		String temp=cleanReceived(msg.toCharArray());
-		Message message=parseMsg(temp);
 		System.out.println("MSG RECEIVED: "+ temp);
+		Message message=parseMsg(temp);
+		sharer.onPeerRequest(message);
 	}
 	
 	/*
@@ -60,6 +63,8 @@ public class Messenger {
 			return new UnRegResult(msg.substring(6,len));
 		else if(msg.substring(0, 6).equals("JOINOK"))
 			return new JoinResult(msg.substring(7,len));
+		else if(msg.substring(0, 4).equals("JOIN"))
+			return new JoinMessage(msg.substring(5,len));
 		else if(msg.substring(0, 7).equals("LEAVEOK"))
 			return new LeaveResult(msg.substring(8,len));
 		else if(msg.substring(0, 5).equals("MSG_SEROK"))
