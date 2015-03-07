@@ -14,7 +14,7 @@ public class Receiver extends Thread {
 	public void run(){
 		try {		
             while (true) {
-            	System.out.println("Reciver waiting");
+            	System.out.println("Waiting for Incomming..");
             	byte[] receiveData = new byte[300]; 
                 byte[] sendData  = new byte[300]; 
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length); 

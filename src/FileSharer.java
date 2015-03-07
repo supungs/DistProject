@@ -70,6 +70,8 @@ public class FileSharer {
 	}
 
 	public void searchFile(String query) {
+		System.out.println(">>Searching for: "+query);
+		
 		ArrayList<String> localFiles = containsFile(query);
 		if (localFiles.size() > 0) {
 			System.out.println(">>Files found localy:");

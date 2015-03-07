@@ -1,8 +1,15 @@
-To Do List
+This program is written in Java. To compile it you need JDK installed and path variables set in your computer.
 
-1. Implement leaving mechanism  //Done
-2. Add Node's file list to the FileSharer //Done
-3. Implement query checking //Done
-4. Replying & forwarding for FileSharer  //Done
-5. Implement query history caching  //Done
-6. Implement File-Owner map entry caching  //Done
+To Compile & Run:
+1. Open a terminal and navigate to the src folder.
+2. Enter the command: javac *.java
+3. Make sure the Bootstrap server is running.
+4. Enter the following command to run: Java Main bootstrap_ip bootstrap_port node_name node_ip node_port
+   eg: Java Main 127.0.0.1 9999 node1 127.0.0.1 127.0.0.1 10000
+5. You can execute following commands within the program.
+	print files 	: Print the list of files the node has
+	print neighbors	: Print the list neighbors the node has	
+	print routes 	: Print the list of file-node mappings
+	search random 	: Search for a random query
+	search xxxx 	: Search for a user given query
+	exit 			: Leave from the network and exit
