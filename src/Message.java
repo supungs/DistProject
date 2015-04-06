@@ -51,16 +51,23 @@ class RegResult extends Message {
 
 		String[] tokens = msg.split(" ");
 		num_neighbors = Integer.parseInt(tokens[0]);
-		if (num_neighbors > 2)
-			return;
+		
 		if (num_neighbors > 0) {
-			ip1 = tokens[1];
-			port1 = Integer.parseInt(tokens[2]);
+			int rand=(int) Math.floor(Math.random()*num_neighbors);
+			ip1 = tokens[3*rand+1];
+			port1 = Integer.parseInt(tokens[3*rand+2]);
 		}
 		if (num_neighbors > 1) {
-			ip2 = tokens[4];
-			port2 = Integer.parseInt(tokens[5]);
+			while(true){
+				int rand=(int) Math.floor(Math.random()*num_neighbors);				
+				ip2 = tokens[3*rand+1];
+				port2 = Integer.parseInt(tokens[3*rand+2]);
+				if(ip1.equals(ip2) && port1==port2) continue;
+				else break;
+			}
+			num_neighbors=2;
 		}
+		
 		ip_from = Config.bootstrap_ip;
 		port_from = Config.bootstrap_port;
 	}
